@@ -28,12 +28,11 @@ trait LoggingHydratorTrait
      * Hydrates all rows returned by the passed statement instance at once.
      *
      * @param Result $stmt
-     * @param ResultSetMapping       $resultSetMapping
-     * @psalm-param array<string, string> $hints
-     *
-     * @return Countable|array
+     * @param ResultSetMapping $resultSetMapping
+     * @param array $hints
+     * @return array|Countable|mixed
      */
-    public function hydrateAll($stmt, $resultSetMapping, array $hints = []): Countable|array
+    public function hydrateAll($stmt, $resultSetMapping, array $hints = []): mixed
     {
         if ($logger = $this->_em->getConfiguration()?->getHydrationLogger()) {
             $type = null;
