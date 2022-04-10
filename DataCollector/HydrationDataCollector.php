@@ -28,10 +28,10 @@ class HydrationDataCollector extends DataCollector
 
     public function __construct(EntityManagerInterface $manager)
     {
-        $this->hydrationLogger = $manager->getConfiguration()->getHydrationLogger();
+        $this->hydrationLogger = $manager->getConfiguration()?->getHydrationLogger();
     }
 
-    public function collect(Request $request, Response $response, \Exception $exception = null)
+    public function collect(Request $request, Response $response, \Throwable $exception = null)
     {
         $this->data['hydrations'] = $this->hydrationLogger->hydrations;
     }

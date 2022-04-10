@@ -13,26 +13,29 @@
 
 namespace Debesha\DoctrineProfileExtraBundle\ORM;
 
+use Countable;
+use Doctrine\DBAL\Result;
 use Doctrine\ORM\Internal\Hydration\ArrayHydrator;
 use Doctrine\ORM\Internal\Hydration\ObjectHydrator;
 use Doctrine\ORM\Internal\Hydration\ScalarHydrator;
 use Doctrine\ORM\Internal\Hydration\SimpleObjectHydrator;
 use Doctrine\ORM\Internal\Hydration\SingleScalarHydrator;
+use Doctrine\ORM\Query\ResultSetMapping;
 
 trait LoggingHydratorTrait
 {
     /**
      * Hydrates all rows returned by the passed statement instance at once.
      *
-     * @param \Doctrine\DBAL\Driver\Statement      $stmt
-     * @param \Doctrine\ORM\Query\ResultSetMapping $resultSetMapping
-     * @param array                                $hints
+     * @param Result $stmt
+     * @param ResultSetMapping       $resultSetMapping
+     * @psalm-param array<string, string> $hints
      *
-     * @return array
+     * @return Countable|array
      */
-    public function hydrateAll($stmt, $resultSetMapping, array $hints = [])
+    public function hydrateAll($stmt, $resultSetMapping, array $hints = []): Countable|array
     {
-        if ($logger = $this->_em->getConfiguration()->getHydrationLogger()) {
+        if ($logger = $this->_em->getConfiguration()?->getHydrationLogger()) {
             $type = null;
 
             if ($this instanceof ObjectHydrator) {

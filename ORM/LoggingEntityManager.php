@@ -17,6 +17,7 @@
 namespace Debesha\DoctrineProfileExtraBundle\ORM;
 
 use Doctrine\Common\EventManager;
+use Doctrine\DBAL\Logging\SQLLogger;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\ORMException;
@@ -50,10 +51,8 @@ class LoggingEntityManager extends EntityManager
         }
     }
 
-    /**
-     * @return LoggingConfiguration
-     */
-    public function getConfiguration()
+
+    public function getConfiguration(): SQLLogger|Configuration|null
     {
         return parent::getConfiguration();
     }
@@ -61,27 +60,27 @@ class LoggingEntityManager extends EntityManager
     /**
      * {@inheritdoc}
      */
-    public static function create($conn, Configuration $config, EventManager $eventManager = null)
+    public static function create($connection, Configuration $config, EventManager $eventManager = null): EntityManager|LoggingEntityManager
     {
         if (!$config->getMetadataDriverImpl()) {
             throw ORMException::missingMappingDriverImpl();
         }
 
         switch (true) {
-            case is_array($conn):
+            case is_array($connection):
                 $conn = \Doctrine\DBAL\DriverManager::getConnection(
-                    $conn, $config, ($eventManager ?: new EventManager())
+                    $connection, $config, ($eventManager ?: new EventManager())
                 );
                 break;
 
-            case $conn instanceof Connection:
-                if ($eventManager !== null && $conn->getEventManager() !== $eventManager) {
+            case $connection instanceof Connection:
+                if ($eventManager !== null && $connection->getEventManager() !== $eventManager) {
                     throw ORMException::mismatchedEventManager();
                 }
                 break;
 
             default:
-                throw new \InvalidArgumentException('Invalid argument: '.$conn);
+                throw new \InvalidArgumentException('Invalid argument: Connection');
         }
 
         return new self($conn, $config, $conn->getEventManager());
