@@ -68,7 +68,7 @@ class LoggingEntityManager extends EntityManager
 
         switch (true) {
             case is_array($connection):
-                $conn = \Doctrine\DBAL\DriverManager::getConnection(
+                $connection = \Doctrine\DBAL\DriverManager::getConnection(
                     $connection, $config, ($eventManager ?: new EventManager())
                 );
                 break;
@@ -83,6 +83,6 @@ class LoggingEntityManager extends EntityManager
                 throw new \InvalidArgumentException('Invalid argument: Connection');
         }
 
-        return new self($conn, $config, $conn->getEventManager());
+        return new self($connection, $config, $connection->getEventManager());
     }
 }
